@@ -4,16 +4,34 @@ import java.sql.*;
 import models.dao.interfaces.TaskDao;
 import models.database.Conexion;
 import models.domain.Task;
+import models.exceptions.FieldsNotCompletedException;
 
 public class TaskDaoImpl implements TaskDao {
 
-    Connection conn;
-    PreparedStatement st;
-    ResultSet rs;
+    private Connection conn;
+    private PreparedStatement st;
+    private ResultSet rs;
     
     @Override
     public void addTask(Task task) {
-        
+        try {
+            if (validateFields(task)) {
+                conn = getConnection();
+                String query = "INSERT INTO task(TaskName,TaskDescription,CategoryId) values(?,?,?)";
+                st = conn.prepareStatement(query);
+                st.setString(1, task.getTaskName());
+                st.setString(2, task.getTaskDescription());
+                st.setInt(3, task.getCategory().getCategoryId());
+                st.executeUpdate();
+                commit(conn);
+            }
+        } catch (FieldsNotCompletedException | SQLException ex) {
+            rollback(conn);
+            System.out.println(ex.getMessage());
+            ex.printStackTrace(System.out);
+        } finally {
+            closeSources();
+        }
     }
 
     @Override
@@ -70,5 +88,16 @@ public class TaskDaoImpl implements TaskDao {
         } catch (SQLException ex) {
             ex.printStackTrace(System.out);
         }
+    }
+    
+    private boolean validateFields(Task task) throws FieldsNotCompletedException {
+        boolean validatedFields = true;
+        
+        if (task.getTaskName() == null || task.getTaskName().isEmpty() 
+                || task.getCategory() == null || task.getCategory().getCategoryId() == 0) {
+            validatedFields = false;
+            throw new FieldsNotCompletedException("Campos no completados!");
+        }
+        return validatedFields;
     }
 }
