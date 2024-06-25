@@ -4,7 +4,7 @@ import java.sql.*;
 import models.dao.interfaces.TaskDao;
 import models.database.Conexion;
 import models.domain.Task;
-import models.exceptions.FieldsNotCompletedException;
+import models.exceptions.*;
 
 public class TaskDaoImpl implements TaskDao {
 
@@ -36,7 +36,22 @@ public class TaskDaoImpl implements TaskDao {
 
     @Override
     public void deleteTask(Task task) {
-
+        try {
+            if (taskFound(task)) {
+                conn = getConnection();
+                String query = "DELETE FROM task WHERE taskID = ?";
+                st = conn.prepareStatement(query);
+                st.setInt(1, task.getTaskId());
+                st.executeQuery();
+                commit(conn);
+            }
+        } catch (TaskNotFoundException | SQLException ex) {
+            rollback(conn);
+            System.out.println(ex.getMessage());
+            ex.printStackTrace(System.out);
+        } finally {
+            closeSources();
+        }
     }
 
     @Override
@@ -96,8 +111,28 @@ public class TaskDaoImpl implements TaskDao {
         if (task.getTaskName() == null || task.getTaskName().isEmpty() 
                 || task.getCategory() == null || task.getCategory().getCategoryId() == 0) {
             validatedFields = false;
-            throw new FieldsNotCompletedException("Campos no completados!");
+            throw new FieldsNotCompletedException("Campos no completados.");
         }
         return validatedFields;
+    }
+    
+     private boolean taskFound(Task task) throws TaskNotFoundException {
+        boolean taskFound = false;
+        try {
+            conn = getConnection();
+            String query = "SELECT * FROM task";
+            st = conn.prepareStatement(query);
+            rs = st.executeQuery();
+            while (rs.next()) {
+                if (!rs.getString("TaskName").equals(task.getTaskName())
+                        && rs.getInt("CategoryID") == task.getCategory().getCategoryId()) {
+                    throw new TaskNotFoundException("Tarea no encontrada.");
+                } else
+                    taskFound = true;
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace(System.out);
+        }
+        return taskFound;
     }
 }
