@@ -1,10 +1,10 @@
-package models.dao.implement;
+package model.dao.implement;
 
 import java.sql.*;
-import models.dao.interfaces.TaskDao;
-import models.database.Conexion;
-import models.domain.Task;
-import models.exceptions.*;
+import model.dao.interfaces.TaskDao;
+import model.database.Conexion;
+import model.domain.Task;
+import model.exceptions.*;
 
 public class TaskDaoImpl implements TaskDao {
 

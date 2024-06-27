@@ -1,4 +1,4 @@
-package models.domain;
+package model.domain;
 
 import java.util.Objects;
 

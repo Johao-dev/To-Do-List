@@ -1,4 +1,4 @@
-package models.exceptions;
+package model.exceptions;
 
 public class FieldsNotCompletedException extends Exception {
     

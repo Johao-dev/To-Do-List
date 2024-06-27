@@ -1,8 +1,8 @@
-package models.dao.interfaces;
+package model.dao.interfaces;
 
-import models.domain.Task;
-import models.exceptions.FieldsNotCompletedException;
-import models.exceptions.TaskNotFoundException;
+import model.domain.Task;
+import model.exceptions.FieldsNotCompletedException;
+import model.exceptions.TaskNotFoundException;
 
 public interface TaskDao {
     
