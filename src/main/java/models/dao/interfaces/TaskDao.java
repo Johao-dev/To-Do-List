@@ -12,5 +12,5 @@ public interface TaskDao {
     
     void updateTask(Task task) throws TaskNotFoundException;
     
-    void searchTask(Task task) throws TaskNotFoundException;
+    boolean searchTask(Task task) throws TaskNotFoundException;
 }

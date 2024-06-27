@@ -78,8 +78,18 @@ public class TaskDaoImpl implements TaskDao {
     }
 
     @Override
-    public void searchTask(Task task) {
-
+    public boolean searchTask(Task task) {
+        boolean founded = false;
+        try {
+            if (taskFound(task)) 
+                founded = true;
+        } catch (TaskNotFoundException ex) {
+            System.out.println(ex.getMessage());
+            ex.printStackTrace(System.out);
+        } finally {
+            closeSources();
+        }
+        return founded;
     }
     
     private Connection getConnection() throws SQLException {
