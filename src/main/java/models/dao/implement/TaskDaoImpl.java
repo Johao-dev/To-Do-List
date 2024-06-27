@@ -56,7 +56,25 @@ public class TaskDaoImpl implements TaskDao {
 
     @Override
     public void updateTask(Task task) {
-
+        try {
+            if (taskFound(task)) {
+                conn = getConnection();
+                String query = "UPDATE task SET TaskName=?, TaskDescription=?, CategoryId=? WHERE TaskID=?";
+                st = conn.prepareStatement(query);
+                st.setString(1, task.getTaskName());
+                st.setString(2, task.getTaskDescription());
+                st.setInt(3, task.getCategory().getCategoryId());
+                st.setInt(4, task.getTaskId());
+                st.executeUpdate();
+                commit(conn);
+            }
+        } catch (TaskNotFoundException | SQLException ex) {
+            rollback(conn);
+            System.out.println(ex.getMessage());
+            ex.printStackTrace(System.out);
+        } finally {
+            closeSources();
+        }
     }
 
     @Override
@@ -110,13 +128,12 @@ public class TaskDaoImpl implements TaskDao {
         
         if (task.getTaskName() == null || task.getTaskName().isEmpty() 
                 || task.getCategory() == null || task.getCategory().getCategoryId() == 0) {
-            validatedFields = false;
             throw new FieldsNotCompletedException("Campos no completados.");
         }
         return validatedFields;
     }
     
-     private boolean taskFound(Task task) throws TaskNotFoundException {
+    private boolean taskFound(Task task) throws TaskNotFoundException {
         boolean taskFound = false;
         try {
             conn = getConnection();
@@ -125,7 +142,7 @@ public class TaskDaoImpl implements TaskDao {
             rs = st.executeQuery();
             while (rs.next()) {
                 if (!rs.getString("TaskName").equals(task.getTaskName())
-                        && rs.getInt("CategoryID") == task.getCategory().getCategoryId()) {
+                        && rs.getInt("CategoryID") != task.getCategory().getCategoryId()) {
                     throw new TaskNotFoundException("Tarea no encontrada.");
                 } else
                     taskFound = true;
