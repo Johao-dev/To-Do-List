@@ -1,10 +1,18 @@
 package view;
 
+import controller.MainViewController;
+
 public class MainView extends javax.swing.JFrame {
 
+    MainViewController ctrl;
     /**
      * Creates new form ToDoList
      */
+    
+    public void setController(MainViewController ctrl) {
+        this.ctrl = ctrl;
+    }
+    
     public MainView() {
         initComponents();
     }
