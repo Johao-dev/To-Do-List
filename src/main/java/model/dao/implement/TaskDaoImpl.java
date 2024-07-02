@@ -1,9 +1,11 @@
 package model.dao.implement;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import model.dao.interfaces.TaskDao;
 import model.database.Conexion;
-import model.domain.Task;
+import model.domain.*;
 import model.exceptions.*;
 
 public class TaskDaoImpl implements TaskDao {
@@ -92,6 +94,23 @@ public class TaskDaoImpl implements TaskDao {
         return founded;
     }
     
+    @Override
+    public List<Task> getAllTasks() {
+        List<Task> tasks = new ArrayList<>();
+        try {
+            conn = getConnection();
+            String query = "SELECT * FROM task";
+            st = conn.prepareStatement(query);
+            rs = st.executeQuery();
+            tasks = buildTasks(rs);
+        } catch (SQLException ex) {
+            ex.printStackTrace(System.out);
+        } finally {
+            closeSources();
+        }
+        return tasks;
+    }
+    
     private Connection getConnection() throws SQLException {
         this.conn = Conexion.getConexion();
         this.conn.setAutoCommit(false); 
@@ -161,5 +180,33 @@ public class TaskDaoImpl implements TaskDao {
             ex.printStackTrace(System.out);
         }
         return taskFound;
+    }
+    
+    private List<Task> buildTasks(ResultSet rs) {
+        List<Task> tasks = new ArrayList<>();
+        try {
+            while (rs.next()) {
+                int taskId = rs.getInt("TaskID");
+                String taskName = rs.getString("TaskName");
+                String taskDescription = rs.getString("TaskDescription");
+                Category cat = null;
+                int categoryId = rs.getInt("categoryID");
+                switch (categoryId) {
+                    case 1 -> {
+                        cat = Category.NORMAL;
+                    }
+                    case 2 -> {
+                        cat = Category.IMPORTANTE;
+                    }
+                    case 3 -> {
+                        cat = Category.URGENTE;
+                    }
+                }
+                tasks.add(new Task(taskId,taskName,taskDescription,cat));
+            }
+        } catch (NullPointerException | SQLException ex) {
+            ex.printStackTrace(System.out);
+        }
+        return tasks;
     }
 }

@@ -1,4 +1,3 @@
-
 import controller.*;
 import model.dao.implement.TaskDaoImpl;
 import model.dao.interfaces.TaskDao;
@@ -24,10 +23,12 @@ public class ToDoList {
         //controllers
         MainViewController mainCtrl = new MainViewController(main, addTask, deleteView, updateView, searchView, task, category);
         AddTaskController addTaskCtrl = new AddTaskController(main, addTask, task, category, (TaskDaoImpl) taskDao);
+        DeleteViewController deleteTaskCtrl = new DeleteViewController(main, deleteView, task, category, (TaskDaoImpl) taskDao);
         
         //views with their controllers
         main.setController(mainCtrl);
         addTask.setController(addTaskCtrl);
+        deleteView.setController(deleteTaskCtrl);
         
         //init
         main.setVisible(true);

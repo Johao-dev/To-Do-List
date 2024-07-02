@@ -12,11 +12,11 @@ import view.MainView;
 
 public class AddTaskController {
     
-    private AddTaskView addTaskView;
-    private MainView mainView;
-    private Task task;
-    private Category category;
-    private TaskDao taskDao;
+    private final AddTaskView addTaskView;
+    private final MainView mainView;
+    private final Task task;
+    private final Category category;
+    private final TaskDao taskDao;
 
     public AddTaskController(MainView mainView, AddTaskView view, Task task, Category category, TaskDaoImpl taskDaoImpl) {
         this.addTaskView = view;
