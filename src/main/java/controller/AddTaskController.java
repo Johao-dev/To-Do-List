@@ -41,6 +41,10 @@ public class AddTaskController {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "ALERT", JOptionPane.ERROR_MESSAGE);
             }
             this.addTaskView.dispose();
+            //cleaning
+            this.addTaskView.TaskName.setText("");
+            this.addTaskView.TaskDescription.setText("");
+            this.addTaskView.TaskCategory.setSelectedIndex(0);
             this.mainView.setVisible(true);
         } else {
             JOptionPane.showMessageDialog(null, "Debe llenar los campos", "ALERT", JOptionPane.ERROR_MESSAGE);

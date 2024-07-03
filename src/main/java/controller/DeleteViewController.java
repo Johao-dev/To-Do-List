@@ -48,6 +48,8 @@ public class DeleteViewController {
                 }
                 JOptionPane.showMessageDialog(null, "Tarea eliminada con exito.", "INFO", JOptionPane.INFORMATION_MESSAGE);
                 this.deleteView.dispose();
+                //cleaning
+                this.deleteView.selectTaskName.removeAllItems();
                 this.main.setVisible(true);
                 break;
             }
