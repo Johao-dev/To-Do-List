@@ -41,10 +41,10 @@ public class TaskDaoImpl implements TaskDao {
         try {
             if (taskFound(task)) {
                 conn = getConnection();
-                String query = "DELETE FROM task WHERE taskID = ?";
+                String query = "DELETE FROM task WHERE TaskID = ?";
                 st = conn.prepareStatement(query);
                 st.setInt(1, task.getTaskId());
-                st.executeQuery();
+                st.executeUpdate();
                 commit(conn);
             }
         } catch (TaskNotFoundException | SQLException ex) {
@@ -170,11 +170,10 @@ public class TaskDaoImpl implements TaskDao {
             st = conn.prepareStatement(query);
             rs = st.executeQuery();
             while (rs.next()) {
-                if (!rs.getString("TaskName").equals(task.getTaskName())
-                        && rs.getInt("CategoryID") != task.getCategory().getCategoryId()) {
-                    throw new TaskNotFoundException("Tarea no encontrada.");
-                } else
+                if (rs.getString("TaskName").equals(task.getTaskName())
+                        && rs.getInt("CategoryID") == task.getCategory().getCategoryId()) {
                     taskFound = true;
+                }
             }
         } catch (SQLException ex) {
             ex.printStackTrace(System.out);

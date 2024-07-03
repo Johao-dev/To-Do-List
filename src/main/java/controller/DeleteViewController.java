@@ -1,9 +1,11 @@
 package controller;
 
 import java.util.*;
+import javax.swing.JOptionPane;
 import model.dao.implement.TaskDaoImpl;
 import model.dao.interfaces.TaskDao;
 import model.domain.*;
+import model.exceptions.TaskNotFoundException;
 import view.*;
 
 public class DeleteViewController {
@@ -26,6 +28,8 @@ public class DeleteViewController {
     private void configListeners() {
         this.deleteView.btnDelete.addActionListener(e -> btnDeleteTaskActionPerformed());
         this.deleteView.btnCancel.addActionListener(e -> btnCancelActionPerformed());
+        //event when item has changed
+        this.deleteView.selectTaskName.addItemListener(e -> itemStateChanged());
     }
 
     private void btnDeleteTaskActionPerformed() {
@@ -34,16 +38,17 @@ public class DeleteViewController {
         
         ListIterator itrTasks = tasks.listIterator();
         while(itrTasks.hasNext()) {
-            String taskName = ((Task)itrTasks.next()).getTaskName();
-            
-            if (taskName.equals(taskSelected)) {
-                
-                String categoryName = ((Task)itrTasks.next()).getCategory().getCategoryName();
-                //error que solucionar aqui xd
-                String taskDescription = ((Task)itrTasks.next()).getTaskDescription();
-                
-                this.deleteView.TaskCategory.setText(categoryName);
-                this.deleteView.TaskDescription.setText(taskDescription);
+            task = (Task)itrTasks.next();
+            if (task.getTaskName().equals(taskSelected)) {
+                try {
+                    taskDao.deleteTask(task);
+                } catch (TaskNotFoundException ex) {
+                    System.out.println(ex.getMessage());
+                    ex.printStackTrace(System.out);
+                }
+                JOptionPane.showMessageDialog(null, "Tarea eliminada con exito.", "INFO", JOptionPane.INFORMATION_MESSAGE);
+                this.deleteView.dispose();
+                this.main.setVisible(true);
                 break;
             }
         }
@@ -53,5 +58,20 @@ public class DeleteViewController {
         this.deleteView.selectTaskName.removeAllItems();
         this.deleteView.dispose();
         this.main.setVisible(true);
+    }
+
+    private void itemStateChanged() {
+        String taskSelected = (String)this.deleteView.selectTaskName.getSelectedItem();
+        List<Task> tasks = taskDao.getAllTasks();
+        
+        ListIterator itrTasks = tasks.listIterator();
+        while(itrTasks.hasNext()) {
+            task = (Task)itrTasks.next();
+            if (task.getTaskName().equals(taskSelected)) {
+                this.deleteView.TaskCategory.setText(task.getCategory().getCategoryName());
+                this.deleteView.TaskDescription.setText(task.getTaskDescription());
+                break;
+            }
+        }
     }
 }
