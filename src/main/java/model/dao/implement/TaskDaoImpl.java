@@ -59,9 +59,9 @@ public class TaskDaoImpl implements TaskDao {
     @Override
     public void updateTask(Task task) {
         try {
-            if (taskFound(task)) {
+            if (validateFields(task)) {
                 conn = getConnection();
-                String query = "UPDATE task SET TaskName=?, TaskDescription=?, CategoryId=? WHERE TaskID=?";
+                String query = "UPDATE task SET TaskName=?, TaskDescription=?, CategoryID=? WHERE TaskID=?";
                 st = conn.prepareStatement(query);
                 st.setString(1, task.getTaskName());
                 st.setString(2, task.getTaskDescription());
@@ -70,7 +70,7 @@ public class TaskDaoImpl implements TaskDao {
                 st.executeUpdate();
                 commit(conn);
             }
-        } catch (TaskNotFoundException | SQLException ex) {
+        } catch (FieldsNotCompletedException | SQLException ex) {
             rollback(conn);
             System.out.println(ex.getMessage());
             ex.printStackTrace(System.out);
@@ -189,7 +189,7 @@ public class TaskDaoImpl implements TaskDao {
                 String taskName = rs.getString("TaskName");
                 String taskDescription = rs.getString("TaskDescription");
                 Category cat = null;
-                int categoryId = rs.getInt("categoryID");
+                int categoryId = rs.getInt("CategoryID");
                 switch (categoryId) {
                     case 1 -> {
                         cat = Category.NORMAL;

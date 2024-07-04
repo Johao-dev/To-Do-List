@@ -52,6 +52,11 @@ public class AddTaskController {
     }
 
     private void btnCancelActionPerfomed() {
+        //cleaning
+        this.addTaskView.TaskName.setText("");
+        this.addTaskView.TaskDescription.setText("");
+        this.addTaskView.TaskCategory.setSelectedIndex(0);
+        
         this.addTaskView.dispose();
         this.mainView.setVisible(true);
     }

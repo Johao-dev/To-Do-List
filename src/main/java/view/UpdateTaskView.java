@@ -1,7 +1,10 @@
 package view;
 
+import controller.UpdateViewController;
+
 public class UpdateTaskView extends javax.swing.JFrame {
 
+    UpdateViewController ctrl;
     /**
      * Creates new form DeleteTaskView
      */
@@ -9,6 +12,9 @@ public class UpdateTaskView extends javax.swing.JFrame {
         initComponents();
     }
 
+    public void setController(UpdateViewController ctrl) {
+        this.ctrl = ctrl;
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

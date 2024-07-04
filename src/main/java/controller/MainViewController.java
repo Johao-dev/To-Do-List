@@ -63,11 +63,16 @@ public class MainViewController {
             String taskName = ((Task)itrTasks.next()).getTaskName();
             this.deleteView.selectTaskName.addItem(taskName);
         }
-        
     }
 
     private void btnUpdateTaskActionPerformed() {
         this.updateView.setVisible(true);
+        List<Task> tasks = taskDao.getAllTasks();
+        ListIterator itrTasks = tasks.listIterator();
+        while (itrTasks.hasNext()) {
+            String taskName = ((Task)itrTasks.next()).getTaskName();
+            this.updateView.selectTaskName.addItem(taskName);
+        }
     }
 
     private void btnSearchTaskActionPerformed() {
