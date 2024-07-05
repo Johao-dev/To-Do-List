@@ -26,12 +26,14 @@ public class ToDoList {
         AddTaskController addTaskCtrl = new AddTaskController(main, addTask, task, category, (TaskDaoImpl) taskDao);
         DeleteViewController deleteTaskCtrl = new DeleteViewController(main, deleteView, task, category, (TaskDaoImpl) taskDao);
         UpdateViewController updateTaskCtrl = new UpdateViewController(main, updateView, task, category, (TaskDaoImpl) taskDao);
+        SearchViewController searchTaskCtrl = new SearchViewController(main, searchView, task, category, (TaskDaoImpl) taskDao);
 
         //views with their controllers
         main.setController(mainCtrl);
         addTask.setController(addTaskCtrl);
         deleteView.setController(deleteTaskCtrl);
         updateView.setController(updateTaskCtrl);
+        searchView.setController(searchTaskCtrl);
 
         //init
         main.setVisible(true);

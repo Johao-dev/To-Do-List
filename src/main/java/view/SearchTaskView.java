@@ -1,10 +1,19 @@
 package view;
 
+import controller.SearchViewController;
+
 public class SearchTaskView extends javax.swing.JFrame {
+    
+    SearchViewController ctrl;
 
     /**
      * Creates new form SearchTaskView
      */
+    
+    public void setController(SearchViewController ctrl) {
+        this.ctrl = ctrl;
+    }
+    
     public SearchTaskView() {
         initComponents();
     }
